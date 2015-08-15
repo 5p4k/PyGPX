@@ -1,5 +1,5 @@
-#/usr/bin/env python
-import xml.dom.minidom
+#!/usr/bin/env python
+import xml.dom.minidom as DOM
 import sys
 
 API_KEY = 'YOUR_API_KEY'
