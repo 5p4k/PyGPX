@@ -5,7 +5,7 @@ import os
 from gpx import TrackPoints
 from elevation import GoogleElevationAPI as Elevation
 
-API_KEY = 'YOUR_API_KEY'
+API_KEY = 'AIzaSyDAFDq-dUpqRk9EywJVGTb5o4yXQSG7dlU'
 
 def main(filename):
 	dom = DOM.parse(filename)
