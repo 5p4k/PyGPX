@@ -2,8 +2,8 @@
 import xml.dom.minidom as DOM
 import sys
 import os
+from gpx import TrackPoints
 from elevation import GoogleElevationAPI as Elevation
-from elevation import TrackPoints
 
 API_KEY = 'YOUR_API_KEY'
 
