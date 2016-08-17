@@ -18,6 +18,9 @@ class GooglePt(object):
         if key == 'elevation':
             self._elevation = value
             self.exif.set_gps_info(self.longitude, self.latitude, self._elevation)
+            # Work around a possible integer overflow bug. The way GExiv computes the rational number,
+            # multiplies the altitude by a big integer and it overflows
+            self.exif.set_exif_tag_rational('Exif.GPSInfo.GPSAltitude', int(self._elevation))
             print('Found altitude for %s: (%f, %f, %f)' % (os.path.basename(self.path), self.latitude, self.longitude, self._elevation))
             self.exif.save_file()
         else:
