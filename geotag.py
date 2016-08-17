@@ -14,14 +14,14 @@ class GooglePt(object):
     def apiformat(self):
         return '%0.6f,%0.6f' % (self.latitude, self.longitude)
 
-    def __setattribute__(self, key, value):
+    def __setattr__(self, key, value):
         if key == 'elevation':
             self._elevation = value
             self.exif.set_gps_info(self.longitude, self.latitude, self._elevation)
             print('Found altitude for %s: (%f, %f, %f)' % (os.path.basename(self.path), self.latitude, self.longitude, self._elevation))
-            # self.exif.save_file()
+            self.exif.save_file()
         else:
-            return super(GooglePt, self).__setattribute__(key, value)
+            return super(GooglePt, self).__setattr__(key, value)
 
     def __getattribute__(self, key):
         if key == 'elevation':
@@ -70,7 +70,7 @@ def main(gpxs, imgs):
             if candidate[2] is not None:
                 print(str(candidate))
                 exif.set_gps_info(candidate[1], candidate[0], candidate[2])
-                # exif.save_file()
+                exif.save_file()
             else:
                 print('(!) %f, %f' % (candidate[0], candidate[1]))
                 batch.append(GooglePt(img, exif, candidate[0], candidate[1]))
