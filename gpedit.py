@@ -1,11 +1,11 @@
-#!/usr/bin/env python
+#!/usr/bin/env python2.7
 import xml.dom.minidom as DOM
 import sys
 import os
 from gpx import TrackPoints
 from elevation import GoogleElevationAPI as Elevation
 
-API_KEY = 'AIzaSyDAFDq-dUpqRk9EywJVGTb5o4yXQSG7dlU'
+API_KEY = 'AIzaSyBepE88vxFrjwZqKLl_cMAj5W01sjBnVnE'
 
 def main(filename):
 	dom = DOM.parse(filename)

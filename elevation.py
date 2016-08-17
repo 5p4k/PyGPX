@@ -30,15 +30,16 @@ class GoogleElevationAPI(requests.Session):
 				# populate chunk
 				for trackpt in trackpts[start_idx:]:
 					idx += 1
-					if trackpt.elevation is None:
-						self._chunk.append(trackpt)
-						if len(self._chunk) >= self.CHUNK_SIZE:
-							break
+					# if trackpt.elevation is None:
+					self._chunk.append(trackpt)
+					if len(self._chunk) >= self.CHUNK_SIZE:
+						break
 				# process chunk
 				print(format_str.format(start_idx, idx, len(trackpts), len(self._chunk)))
 				# populate params
 				self.params['locations'] = '|'.join([item.apiformat() for item in self._chunk])
 
+			print(self.params)
 			response = self.get(self.ELEVATION_API_URL)
 			self._last_status = GoogleElevationAPI.STATUS_ERR
 			try:

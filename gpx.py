@@ -37,7 +37,7 @@ class TrackPoint(object):
 		else:
 			node = candidates[0]
 			if node.hasChildNodes():
-				if node.firstChild.nodeType == DOM.TEXT_NODE:
+				if node.firstChild.nodeType == 3:
 					default_value = node.firstChild.nodeValue
 					if node.firstChild == node.lastChild:
 						return node
