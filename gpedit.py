@@ -1,4 +1,4 @@
-#!/usr/bin/env python2.7
+#!/usr/bin/env python3.4
 import xml.dom.minidom as DOM
 import sys
 import os
@@ -15,7 +15,7 @@ def main(filename):
 		print('Not all elevations retrieved.')
 		answer = None
 		while answer is None:
-			answer = raw_input('Proceed anyway? [y/N] ').lower()
+			answer = input('Proceed anyway? [y/N] ').lower()
 			if answer in ['y', 'n']:
 				answer = answer == 'y'
 			else:
