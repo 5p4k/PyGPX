@@ -2,6 +2,7 @@ import xml.dom.minidom as DOM
 from xml.dom.minidom import Node
 from datetime import datetime
 import dateutil.parser
+from pytz import timezone
 import bisect
 
 class TrackPoint(object):
@@ -79,13 +80,13 @@ class TrackPoint(object):
         return '%0.6f,%0.6f' % (self.lat, self.lon)
 
     def __lt__(self, other):
-        return self.time < other.time
+        return self.time < other.time if isinstance(other, TrackPoint) else self.time < other
     def __gt__(self, other):
-        return self.time > other.time
+        return self.time > other.time if isinstance(other, TrackPoint) else self.time > other
     def __ge__(self, other):
-        return self.time >= other.time
+        return self.time >= other.time if isinstance(other, TrackPoint) else self.time >= other
     def __le__(self, other):
-        return self.time <= other.time
+        return self.time <= other.time if isinstance(other, TrackPoint) else self.time <= other
 
     def __init__(self, dom, trackpt_dom):
         self._dom_node = trackpt_dom
@@ -117,7 +118,10 @@ class GeotagQuery(object):
         return i - 1 if i else None
 
     def __call__(self, time):
-        if time < self._locations[0] or time > self._locations[-1]:
+        if time.tzinfo is None or time.tzinfo.utcoffset(time) is None:
+            time = timezone('Europe/Rome').localize(time)
+
+        if time < self._locations[0].time or time > self._locations[-1].time:
             return None
         le_idx = self._find_le_idx(time)
         if not le_idx:
@@ -141,4 +145,4 @@ class GeotagQuery(object):
     def __init__(self, track):
         super(GeotagQuery, self).__init__()
         self._locations = [pt for pt in track if pt.time is not None]
-        self._locations.sort(key=lambda pt : pt.time)
+        self._locations.sort()

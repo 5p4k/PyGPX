@@ -51,7 +51,7 @@ def main(gpxs, imgs):
     print('Loaded %d tracks.' % len(tracks))
     for img in imgs:
         try:
-            exif = GExiv2.Metadata()
+            exif = GExiv2.Metadata(img)
             if tuple(exif.get_gps_info()) != (0., 0., 0.):
                 continue
 
@@ -73,9 +73,10 @@ def main(gpxs, imgs):
                 # exif.save_file()
             else:
                 print('(!) %f, %f' % (candidate[0], candidate[1]))
-                batch.append(Googlept(img, exif, candidate[0], candidate[1]))
+                batch.append(GooglePt(img, exif, candidate[0], candidate[1]))
         except Exception as e:
-            print(str(e))
+            raise e
+            # print(str(e))
     print('Missing %d altitude queries.' % len(batch))
     elevapi = Elevation(API_KEY)
     elevapi.run(batch)
