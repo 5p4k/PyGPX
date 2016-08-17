@@ -72,8 +72,20 @@ class TrackPoint(object):
         else:
             self._dom_time.firstChild.nodeValue = dt.isoformat()
 
+    def get_gps_triple(self):
+        return (self.lat, self.lon, self.ele)
+
     def apiformat(self):
         return '%0.6f,%0.6f' % (self.lat, self.lon)
+
+    def __lt__(self, other):
+        return self.time < other.time
+    def __gt__(self, other):
+        return self.time > other.time
+    def __ge__(self, other):
+        return self.time >= other.time
+    def __le__(self, other):
+        return self.time <= other.time
 
     def __init__(self, dom, trackpt_dom):
         self._dom_node = trackpt_dom
@@ -100,10 +112,31 @@ class TrackPoints(object):
 
 
 class GeotagQuery(object):
+    def _find_le_idx(self, time):
+        i = bisect.bisect_right(self._locations, time)
+        return i - 1 if i else None
 
     def __call__(self, time):
         if time < self._locations[0] or time > self._locations[-1]:
             return None
+        le_idx = self._find_le_idx(time)
+        if not le_idx:
+            return None
+        if self._locations[le_idx].time == time:
+            return self._locations[le_idx].get_gps_triple()
+
+        # interpolate linearly
+        time0 = self._locations[le_idx].time
+        time1 = self._locations[le_idx + 1].time
+        lat0 = self._locations[le_idx].lat
+        lat1 = self._locations[le_idx + 1].lat
+        lon0 = self._locations[le_idx].lon
+        lon1 = self._locations[le_idx + 1].lon
+
+        alpha = (time - time0).total_seconds() / (time1 - time0).total_seconds()
+        lat = (1. - alpha) * lat0 + alpha * lat1
+        lon = (1. - alpha) * lon0 + alpha * lon1
+        return (lat, lon, None)
 
     def __init__(self, track):
         super(GeotagQuery, self).__init__()
