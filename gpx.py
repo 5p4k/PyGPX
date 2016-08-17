@@ -1,7 +1,7 @@
 import xml.dom.minidom as DOM
 from xml.dom.minidom import Node
 from datetime import datetime
-import dateutil
+import dateutil.parser
 import bisect
 
 class TrackPoint(object):
@@ -65,7 +65,7 @@ class TrackPoint(object):
         if str_value == '':
             return None
         else:
-            return dateutil.parse(str_value)
+            return dateutil.parser.parse(str_value)
     def _set_time(self, dt):
         if dt is None:
             self._dom_time.firstChild.nodeValue = ''
