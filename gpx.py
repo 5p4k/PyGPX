@@ -3,7 +3,7 @@ from datetime import datetime
 import dateutil
 
 class TrackPoint(object):
-	def __getattr__(self, key):
+	def __getattribute__(self, key):
 		if key in ['lat', 'latitude']:
 			return float(self._dom_node.getAttribute('lat'))
 		elif key in ['lon', 'longitude']:
@@ -15,7 +15,7 @@ class TrackPoint(object):
 		else:
 			return super(TrackPoint, self).__getattr__(key)
 
-	def __setattr__(self, key, value):
+	def __setattribute__(self, key, value):
 		if key in ['lat', 'latitude']:
 			self._dom_node.setAttribute('lat', ('%0.6f' % value))
 		elif key in ['lon', 'longitude']:
