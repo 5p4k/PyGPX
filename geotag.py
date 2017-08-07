@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.4
+#!/usr/bin/env python3
 from gpx import *
 import xml.dom.minidom as DOM
 import sys

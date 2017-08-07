@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.4
+#!/usr/bin/env python3
 import xml.dom.minidom as DOM
 import sys
 import os
