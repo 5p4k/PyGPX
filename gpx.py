@@ -5,8 +5,8 @@ import dateutil.parser
 from pytz import timezone
 import bisect
 
-class TrackPoint(object):
-    def __getattribute__(self, key):
+class TrackPoint:
+    def __getattr__(self, key):
         if key in ['lat', 'latitude']:
             return float(self._dom_node.getAttribute('lat'))
         elif key in ['lon', 'longitude']:
@@ -16,9 +16,9 @@ class TrackPoint(object):
         elif key == 'time':
             return self._get_time()
         else:
-            return super(TrackPoint, self).__getattribute__(key)
+            return super(TrackPoint, self).__getattr__(key)
 
-    def __setattribute__(self, key, value):
+    def __setattr__(self, key, value):
         if key in ['lat', 'latitude']:
             self._dom_node.setAttribute('lat', ('%0.6f' % value))
         elif key in ['lon', 'longitude']:
@@ -28,7 +28,7 @@ class TrackPoint(object):
         elif key == 'time':
             self._set_time(value)
         else:
-            super(TrackPoint, self).__setattribute__(key, value)
+            super(TrackPoint, self).__setattr__(key, value)
 
     def _ensure_tag(self, dom, tagname, default_value=''):
         candidates = self._dom_node.getElementsByTagName(tagname)
@@ -93,7 +93,7 @@ class TrackPoint(object):
         self._dom_ele = self._ensure_tag(dom, 'ele')
         self._dom_time = self._ensure_tag(dom, 'time')
 
-class TrackPoints(object):
+class TrackPoints:
 
     def __getitem__(self, key):
         return self._locations.__getitem__(key)
@@ -112,7 +112,7 @@ class TrackPoints(object):
             self._locations.append(TrackPoint(dom, trkpt))
 
 
-class GeotagQuery(object):
+class GeotagQuery:
     def _find_le_idx(self, time):
         i = bisect.bisect_right(self._locations, time)
         return i - 1 if i else None
@@ -143,6 +143,5 @@ class GeotagQuery(object):
         return (lat, lon, None)
 
     def __init__(self, track):
-        super(GeotagQuery, self).__init__()
         self._locations = [pt for pt in track if pt.time is not None]
         self._locations.sort()
