@@ -4,15 +4,13 @@ import sys
 import os
 from gpx import TrackPoints
 from elevation import GoogleElevationAPI as Elevation
+import argparse
 
-API_KEY = 'AIzaSyBepE88vxFrjwZqKLl_cMAj5W01sjBnVnE'
-
-def main(filename):
+def main(elevapi, filename):
     dom = DOM.parse(filename)
     points = TrackPoints(dom)
-    elevapi = Elevation(API_KEY)
     if not elevapi.run(points):
-        print('Not all elevations retrieved.')
+        print('(W) Not all elevations retrieved.')
         answer = None
         while answer is None:
             answer = input('Proceed anyway? [y/N] ').lower()
@@ -28,7 +26,17 @@ def main(filename):
         dom.writexml(writer)
 
 if __name__ == '__main__':
-    if len(sys.argv) <= 1:
-        print('Usage: %s <file.gpx>' % sys.argv[0])
-    else:
-        main(sys.argv[1])
+    parser = argparse.ArgumentParser(description='Add elevation information to a pre-existing GPX track.')
+    parser.add_argument('gpx', nargs='+', help='GPX file(s) to modify (a backup will be made).')
+    parser.add_argument('-k', '--key', required=True, help='Google API key.')
+    args = parser.parse_args()
+    elevapi = Elevation(args.key)
+    for filename in args.gpx:
+        print('Processing %s...' % filename)
+        if not os.path.isfile(filename):
+            print('(E) Not a readable file.')
+        else:
+            try:
+                main(elevapi, filename)
+            except Exception as e:
+                print(e)
